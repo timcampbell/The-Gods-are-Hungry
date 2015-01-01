@@ -1,13 +1,13 @@
 package com.sopa89.hungrygods;
 
 //import com.sopa89.hungrygods.client.handler.KeyEventHandler;
-//import com.sopa89.hungrygods.handler.ConfigurationHandler;
+import com.sopa89.hungrygods.handler.ConfigurationHandler;
 //import com.sopa89.hungrygods.init.ModBlocks;
 //import com.sopa89.hungrygods.init.ModItems;
 //import com.sopa89.hungrygods.init.Recipes;
-//import com.sopa89.hungrygods.proxy.IProxy;
+import com.sopa89.hungrygods.proxy.IProxy;
 import com.sopa89.hungrygods.reference.Reference;
-//import com.sopa89.hungrygods.utility.LogHelper;
+import com.sopa89.hungrygods.utility.LogHelper;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -31,11 +31,11 @@ public class HungryGods
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
 		
-		proxy.registerKeyBindings();
-		
-		ModItems.init();
-		
-		ModBlocks.init();
+//		proxy.registerKeyBindings();
+//		
+//		ModItems.init();
+//		
+//		ModBlocks.init();
 		
 		LogHelper.info("Pre-Initialization Complete!");
 	}
@@ -43,9 +43,9 @@ public class HungryGods
 	@Mod.EventHandler()
 	public void init(FMLInitializationEvent event)
 	{
-		FMLCommonHandler.instance().bus().register(new KeyEventHandler());
+//		FMLCommonHandler.instance().bus().register(new KeyEventHandler());
 		
-		Recipes.init();
+//		Recipes.init();
 		
 		LogHelper.info("Initialization Complete!");
 	}
