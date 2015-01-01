@@ -1,0 +1,21 @@
+[
+{
+    "modid": "HungryGods",
+    "name": "The Gods are Hungry",
+    "description": "The Minecraft Gods have become hungry and require you to make sacrifices to feed them.",
+    "version": "0.1",
+    "mcversion": "1.7.10",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+        "Sopa89"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [
+    ],
+    "parent": "",
+    "dependencies": [
+    ]
+}
+]
