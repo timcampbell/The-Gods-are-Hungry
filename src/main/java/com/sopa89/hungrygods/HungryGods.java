@@ -36,6 +36,8 @@ public class HungryGods
 	@Mod.EventHandler()
 	public void init(FMLInitializationEvent event)
 	{
+		ModBlocks.initTileEntities();
+		
 		LogHelper.info("Initialization Complete!");
 	}
 	

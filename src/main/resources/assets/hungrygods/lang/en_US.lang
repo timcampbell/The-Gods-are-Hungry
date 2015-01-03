@@ -3,3 +3,7 @@ itemGroup.hungrygods=The Gods are Hungry
 
 #Blocks
 tile.hungrygods:itemAltar.name=Item Sacrifice Altar
+
+#Messages
+msg.itemTime.txt=The time until next required item sacrifice is: 
+msg.itemSacrificeSoon.txt=You will need to sacrifice an item to the gods shortly.
