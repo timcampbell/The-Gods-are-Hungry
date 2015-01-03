@@ -12,7 +12,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class ConfigurationHandler 
 {
 	public static Configuration configuration;
-	public static boolean testValue=false;
+	public static int itemAltarTime=600;
 	
 	public static void init(File configFile)
 	{
@@ -34,7 +34,7 @@ public class ConfigurationHandler
 	
 	private static void loadConfiguration()
 	{
-		testValue=configuration.getBoolean("configValue", Configuration.CATEGORY_GENERAL, false, "This is a test configuration value");
+		itemAltarTime=configuration.getInt("Item Sacrifice Altar Timer", Configuration.CATEGORY_GENERAL, 600, 60, 3600, "Max time between required sacrifices");
 		
 		if(configuration.hasChanged())
 		{
