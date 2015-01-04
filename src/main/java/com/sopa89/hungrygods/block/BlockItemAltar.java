@@ -42,7 +42,21 @@ public class BlockItemAltar extends BlockHG implements ITileEntityProvider
 		{
 			TileEntityItemAltar altar=(TileEntityItemAltar)(world.getTileEntity(x, y, z));
 			if(!world.isRemote)
-				Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemTime.txt").appendText(altar.getTime()));
+			{
+				if(Minecraft.getMinecraft().thePlayer.getHeldItem()==null)
+				{
+					if(altar.getIntTime()>0)
+					{
+						Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemTime.txt").appendText(altar.getTime()));
+					}
+					else
+					{
+						Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemOverTime.txt").appendText(altar.getOverTime()));
+					}
+				}
+//				else
+//					altar.resetTimer();
+			}
 			return true;
 		}
 		return false;

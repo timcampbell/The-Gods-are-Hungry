@@ -1,6 +1,7 @@
 package com.sopa89.hungrygods.tileEntity;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
@@ -10,19 +11,23 @@ import com.sopa89.hungrygods.handler.ConfigurationHandler;
 public class TileEntityItemAltar extends TileEntity
 {
 	private final int MAX_TIME;
+	private final int SPAWN_TIME;
 	
 	private int timer;
+	private int overTimer=0;
 	private int minutes;
 	private int seconds;
 	private int ticks=20;
 	private boolean messageSent=false;
+	private boolean mobSpawned=false;
 	
 	public TileEntityItemAltar()
 	{
 		super();
 		MAX_TIME=ConfigurationHandler.itemAltarTime;
+		SPAWN_TIME=ConfigurationHandler.itemAltarSpawnTime;
 		timer=MAX_TIME;
-		calcTimes();
+		calcTimes(timer);
 	}
 	
 	@Override
@@ -36,11 +41,11 @@ public class TileEntityItemAltar extends TileEntity
 				countDown();
 				ticks=20;
 			}
-			if(timer<=0)
+			if(overTimer%SPAWN_TIME==0 && timer<=0 && !mobSpawned)
 			{
-				timer=MAX_TIME;
+				spawnMob();
 			}
-			else if((!messageSent)&&(timer==90 || timer==60 || timer==30))
+			else if((timer!=MAX_TIME) && (!messageSent)&&(timer==90 || timer==60 || timer==30))
 			{
 					messageSent=true;
 					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemSacrificeSoon.txt"));
@@ -48,17 +53,21 @@ public class TileEntityItemAltar extends TileEntity
 		}
 	}
 	
-	private void calcTimes()
+	private void calcTimes(int num)
 	{
-		minutes=timer/60;
-		seconds=timer%60;
+		minutes=num/60;
+		seconds=num%60;
 	}
 	
 	private void countDown()
 	{
-		timer--;
+		if(timer>0)
+			timer--;
+		else
+			overTimer++;
 		messageSent=false;
-		calcTimes();
+		mobSpawned=false;
+		calcTimes(timer);
 	}
 	
 	public String getTime()
@@ -76,12 +85,19 @@ public class TileEntityItemAltar extends TileEntity
 		return result;
 	}
 	
+	public void resetTimer()
+	{
+		timer=MAX_TIME;
+		overTimer=0;
+	}
+	
 	@Override
 	public void writeToNBT(NBTTagCompound compound)
 	{
 		super.writeToNBT(compound);
 		compound.setInteger("Timer", timer);
-		compound.setBoolean("Message Sent", messageSent);
+		compound.setBoolean("messageSent", messageSent);
+		compound.setInteger("overTimer", overTimer);
 	}
 	
 	@Override
@@ -89,6 +105,39 @@ public class TileEntityItemAltar extends TileEntity
 	{
 		super.readFromNBT(compound);
 		timer=compound.getInteger("Timer");
-		messageSent=compound.getBoolean("Message Sent");
+		messageSent=compound.getBoolean("messageSent");
+		overTimer=compound.getInteger("overTimer");
+	}
+	
+	private void spawnMob()
+	{
+		mobSpawned=true;
+		if(!worldObj.isRemote)
+		{
+			EntityZombie zombie=new EntityZombie(worldObj);
+			zombie.setPosition(xCoord+.5, yCoord+1, zCoord+.5);
+			worldObj.spawnEntityInWorld(zombie);
+		}
+	}
+
+	public int getIntTime()
+	{
+		return timer;
+	}
+	
+	public String getOverTime()
+	{
+		String result;
+		calcTimes(overTimer);
+		result=minutes+":";
+		if(seconds<10)
+		{
+			result+="0"+seconds;
+		}
+		else
+		{
+			result+=seconds+"";
+		}
+		return result;
 	}
 }
