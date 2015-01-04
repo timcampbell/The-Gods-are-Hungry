@@ -1,5 +1,7 @@
 package com.sopa89.hungrygods.tileEntity;
 
+import java.util.Random;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,12 +14,17 @@ public class TileEntityItemAltar extends TileEntity
 {
 	private final int MAX_TIME;
 	private final int SPAWN_TIME;
+	private final int MAX_REQUIRED;
+	private final int PERCENT_INCREASE;
 	
 	private int timer;
-	private int overTimer=0;
+	private int ticks=20;
 	private int minutes;
 	private int seconds;
-	private int ticks=20;
+	
+	private int itemCount=0;
+	private int requiredItems=1;
+	
 	private boolean messageSent=false;
 	private boolean mobSpawned=false;
 	
@@ -27,7 +34,9 @@ public class TileEntityItemAltar extends TileEntity
 		MAX_TIME=ConfigurationHandler.itemAltarTime;
 		SPAWN_TIME=ConfigurationHandler.itemAltarSpawnTime;
 		timer=MAX_TIME;
-		calcTimes(timer);
+		
+		MAX_REQUIRED=ConfigurationHandler.itemAltarMax;
+		PERCENT_INCREASE=ConfigurationHandler.itemAltarPercentIncrease;
 	}
 	
 	@Override
@@ -36,12 +45,11 @@ public class TileEntityItemAltar extends TileEntity
 		if(!worldObj.isRemote)
 		{
 			ticks--;
-			if(ticks==0)
+			if(ticks<=0)
 			{
 				countDown();
-				ticks=20;
 			}
-			if(overTimer%SPAWN_TIME==0 && timer<=0 && !mobSpawned)
+			if(Math.abs(timer)%SPAWN_TIME==0 && timer<=0 && !mobSpawned)
 			{
 				spawnMob();
 			}
@@ -53,26 +61,24 @@ public class TileEntityItemAltar extends TileEntity
 		}
 	}
 	
-	private void calcTimes(int num)
+	private void calcTimes()
 	{
-		minutes=num/60;
-		seconds=num%60;
+		minutes=Math.abs(timer)/60;
+		seconds=Math.abs(timer)%60;
 	}
 	
 	private void countDown()
 	{
-		if(timer>0)
-			timer--;
-		else
-			overTimer++;
+		timer--;
+		ticks=20;
 		messageSent=false;
 		mobSpawned=false;
-		calcTimes(timer);
 	}
 	
-	public String getTime()
+	private String getTime()
 	{
 		String result;
+		calcTimes();
 		result=minutes+":";
 		if(seconds<10)
 		{
@@ -85,28 +91,35 @@ public class TileEntityItemAltar extends TileEntity
 		return result;
 	}
 	
-	public void resetTimer()
+	private void resetTimer()
 	{
 		timer=MAX_TIME;
-		overTimer=0;
 	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound compound)
 	{
 		super.writeToNBT(compound);
-		compound.setInteger("Timer", timer);
+		compound.setInteger("timer", timer);
 		compound.setBoolean("messageSent", messageSent);
-		compound.setInteger("overTimer", overTimer);
+		
+		compound.setInteger("itemCount", itemCount);
+		compound.setInteger("requiredItems", requiredItems);
+		
+		compound.setBoolean("mobSpawned", mobSpawned);
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound)
 	{
 		super.readFromNBT(compound);
-		timer=compound.getInteger("Timer");
+		timer=compound.getInteger("timer");
 		messageSent=compound.getBoolean("messageSent");
-		overTimer=compound.getInteger("overTimer");
+		
+		itemCount=compound.getInteger("itemCount");
+		requiredItems=compound.getInteger("requiredItems");
+		
+		mobSpawned=compound.getBoolean("mobSpawned");
 	}
 	
 	private void spawnMob()
@@ -119,25 +132,35 @@ public class TileEntityItemAltar extends TileEntity
 			worldObj.spawnEntityInWorld(zombie);
 		}
 	}
-
-	public int getIntTime()
-	{
-		return timer;
-	}
 	
-	public String getOverTime()
+	public void makeSacrifice()
 	{
-		String result;
-		calcTimes(overTimer);
-		result=minutes+":";
-		if(seconds<10)
+		Random rand=new Random();
+		itemCount++;
+		if(itemCount>=requiredItems)
 		{
-			result+="0"+seconds;
+			resetTimer();
+			itemCount=0;
+			if(requiredItems<MAX_REQUIRED && rand.nextInt(100)+1<=PERCENT_INCREASE)
+			{
+				requiredItems++;
+				if(!worldObj.isRemote)
+				{
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemSacrificeIncreased.txt").appendText(requiredItems+""));
+				}
+			}
+		}
+	}
+
+	public void displayInfo()
+	{
+		if(timer>0)
+		{
+			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemTime.txt").appendText(getTime()));
 		}
 		else
 		{
-			result+=seconds+"";
+			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemOverTime.txt").appendText(getTime()));
 		}
-		return result;
 	}
 }

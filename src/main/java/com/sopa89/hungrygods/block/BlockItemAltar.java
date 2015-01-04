@@ -3,8 +3,8 @@ package com.sopa89.hungrygods.block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 
@@ -45,17 +45,14 @@ public class BlockItemAltar extends BlockHG implements ITileEntityProvider
 			{
 				if(Minecraft.getMinecraft().thePlayer.getHeldItem()==null)
 				{
-					if(altar.getIntTime()>0)
-					{
-						Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemTime.txt").appendText(altar.getTime()));
-					}
-					else
-					{
-						Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemOverTime.txt").appendText(altar.getOverTime()));
-					}
+					altar.displayInfo();
 				}
-//				else
-//					altar.resetTimer();
+				else
+				{
+					player.inventory.decrStackSize(player.inventory.currentItem, 1);
+					player.inventoryContainer.detectAndSendChanges();
+					altar.makeSacrifice();
+				}
 			}
 			return true;
 		}
