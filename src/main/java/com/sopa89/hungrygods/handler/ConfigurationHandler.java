@@ -16,6 +16,7 @@ public class ConfigurationHandler
 	public static int itemAltarSpawnTime=60;
 	public static int itemAltarMax=10;
 	public static int itemAltarPercentIncrease=50;
+	public static int itemAltarBaseRequirement=1;
 	
 	public static void init(File configFile)
 	{
@@ -40,8 +41,9 @@ public class ConfigurationHandler
 		itemAltarTime=configuration.getInt("Item Sacrifice Altar Timer", configuration.CATEGORY_GENERAL, 600, 60, 3600, "Max time between required sacrifices");
 		itemAltarSpawnTime=configuration.getInt("Item Altar Spawn Time", configuration.CATEGORY_GENERAL, 60, 10, 90, "Time taken between spawns from the item altar if no sacrifice is made in required time");
 		
-		itemAltarMax=configuration.getInt("itemAltarMax", configuration.CATEGORY_GENERAL, 10, 1, 64, "Max number of item that will be required as a sacrifice");
-		itemAltarPercentIncrease=configuration.getInt("itemAltarPercentIncrease", configuration.CATEGORY_GENERAL, 50, 0, 100, "Percent chance that the required items will increase after a successful sacrifice");
+		itemAltarMax=configuration.getInt("Item Altar Max", configuration.CATEGORY_GENERAL, 10, 1, 64, "Max number of item that will be required as a sacrifice");
+		itemAltarPercentIncrease=configuration.getInt("Item Altar Percent Increase", configuration.CATEGORY_GENERAL, 50, 0, 100, "Percent chance that the required items will increase after a successful sacrifice");
+		itemAltarBaseRequirement=configuration.getInt("Item Altar Base Requirement", configuration.CATEGORY_GENERAL, 1, 1, 10, "Initial number of items required for first sacrifice");
 		if(configuration.hasChanged())
 		{
 			configuration.save();

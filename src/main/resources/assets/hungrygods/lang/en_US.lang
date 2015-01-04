@@ -8,4 +8,5 @@ tile.hungrygods:itemAltar.name=Item Sacrifice Altar
 msg.itemTime.txt=The time until next required item sacrifice is: 
 msg.itemOverTime.txt=Time since last missed sacrifice: 
 msg.itemSacrificeSoon.txt=You will need to sacrifice an item to the gods shortly.
-msg.itemSacrificeIncreased.txt=The gods have become hungrier.  The required number of sacrificed items has increased to 
+msg.itemSacrificeIncreased.txt=The gods have become hungrier.  The required number of sacrificed items has increased to
+msg.currentReq.txt=Number of items required for next sacrifice: 

@@ -16,6 +16,7 @@ public class TileEntityItemAltar extends TileEntity
 	private final int SPAWN_TIME;
 	private final int MAX_REQUIRED;
 	private final int PERCENT_INCREASE;
+	private final int BASE_REQUIREMENT;
 	
 	private int timer;
 	private int ticks=20;
@@ -23,7 +24,7 @@ public class TileEntityItemAltar extends TileEntity
 	private int seconds;
 	
 	private int itemCount=0;
-	private int requiredItems=1;
+	private int requiredItems;
 	
 	private boolean messageSent=false;
 	private boolean mobSpawned=false;
@@ -37,6 +38,8 @@ public class TileEntityItemAltar extends TileEntity
 		
 		MAX_REQUIRED=ConfigurationHandler.itemAltarMax;
 		PERCENT_INCREASE=ConfigurationHandler.itemAltarPercentIncrease;
+		BASE_REQUIREMENT=ConfigurationHandler.itemAltarBaseRequirement;
+		requiredItems=BASE_REQUIREMENT;
 	}
 	
 	@Override
@@ -61,10 +64,10 @@ public class TileEntityItemAltar extends TileEntity
 		}
 	}
 	
-	private void calcTimes()
+	private void calcTimes(int time)
 	{
-		minutes=Math.abs(timer)/60;
-		seconds=Math.abs(timer)%60;
+		minutes=Math.abs(time)/60;
+		seconds=Math.abs(time)%60;
 	}
 	
 	private void countDown()
@@ -75,10 +78,10 @@ public class TileEntityItemAltar extends TileEntity
 		mobSpawned=false;
 	}
 	
-	private String getTime()
+	private String getTime(int time)
 	{
 		String result;
-		calcTimes();
+		calcTimes(time);
 		result=minutes+":";
 		if(seconds<10)
 		{
@@ -156,11 +159,12 @@ public class TileEntityItemAltar extends TileEntity
 	{
 		if(timer>0)
 		{
-			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemTime.txt").appendText(getTime()));
+			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemTime.txt").appendText(getTime(timer)));
 		}
 		else
 		{
-			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemOverTime.txt").appendText(getTime()));
+			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemOverTime.txt").appendText(getTime(timer)));
 		}
+		Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.currentReq.txt").appendText(requiredItems+""));
 	}
 }

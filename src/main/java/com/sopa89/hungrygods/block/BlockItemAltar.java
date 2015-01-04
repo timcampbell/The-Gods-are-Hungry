@@ -22,7 +22,12 @@ public class BlockItemAltar extends BlockHG implements ITileEntityProvider
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) 
 	{
-		return new TileEntityItemAltar();
+		TileEntityItemAltar altar=new TileEntityItemAltar();
+		if(!world.isRemote)
+		{
+			altar.displayInfo();
+		}
+		return altar;
 	}
 	
 	public boolean isObserved(World world, int x, int y, int z, int side)
@@ -58,6 +63,4 @@ public class BlockItemAltar extends BlockHG implements ITileEntityProvider
 		}
 		return false;
 	}
-	
-	
 }
