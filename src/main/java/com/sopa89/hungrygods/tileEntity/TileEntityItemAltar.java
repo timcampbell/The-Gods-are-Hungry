@@ -64,10 +64,10 @@ public class TileEntityItemAltar extends TileEntity
 		}
 	}
 	
-	private void calcTimes(int time)
+	private void calcTimes()
 	{
-		minutes=Math.abs(time)/60;
-		seconds=Math.abs(time)%60;
+		minutes=Math.abs(timer)/60;
+		seconds=Math.abs(timer)%60;
 	}
 	
 	private void countDown()
@@ -78,10 +78,10 @@ public class TileEntityItemAltar extends TileEntity
 		mobSpawned=false;
 	}
 	
-	private String getTime(int time)
+	private String getTime()
 	{
 		String result;
-		calcTimes(time);
+		calcTimes();
 		result=minutes+":";
 		if(seconds<10)
 		{
@@ -159,11 +159,11 @@ public class TileEntityItemAltar extends TileEntity
 	{
 		if(timer>0)
 		{
-			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemTime.txt").appendText(getTime(timer)));
+			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemTime.txt").appendText(getTime()));
 		}
 		else
 		{
-			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemOverTime.txt").appendText(getTime(timer)));
+			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.itemOverTime.txt").appendText(getTime()));
 		}
 		Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("msg.currentReq.txt").appendText(requiredItems+""));
 	}
